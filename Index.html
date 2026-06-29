@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ Castle Bazar Army Calculator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Vazirmatn', sans-serif;
+    background: radial-gradient(circle at top, #1f2937, #0b1220);
+    color: white;
+}
+
+header {
+    text-align: center;
+    padding: 25px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fbbf24;
+}
+
+.container {
+    max-width: 650px;
+    margin: auto;
+    padding: 10px;
+}
+
+.card {
+    background: rgba(17, 24, 39, 0.9);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+}
+
+label {
+    font-size: 13px;
+    color: #cbd5e1;
+    display: block;
+    margin-top: 10px;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: none;
+    background: #111827;
+    color: white;
+}
+
+button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg,#fbbf24,#f59e0b);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 15px;
+    display: grid;
+    gap: 10px;
+}
+
+.box {
+    background: #0f172a;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>⚔️ Castle Bazar Army Calculator ⚔️</header>
+
+<div class="container">
+
+<div class="card">
+
+<label>Unit</label>
+<select id="unit"></select>
+
+<label>Amount</label>
+<input type="number" id="count" value="1" min="1">
+
+<button onclick="calc()">⚡ Calculate</button>
+
+<div class="result">
+<div class="box"><span>⚔️ Power</span><span id="power">0</span></div>
+<div class="box"><span>🌾 Wheat</span><span id="wheat">0</span></div>
+<div class="box"><span>🪵 Wood</span><span id="wood">0</span></div>
+<div class="box"><span>🪨 Stone</span><span id="stone">0</span></div>
+<div class="box"><span>⛏️ Iron</span><span id="iron">0</span></div>
+<div class="box"><span>⏱️ Time</span><span id="time">0</span></div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+const units = {
+"شمشیرزن": {w:61, wood:85, stone:77, iron:117, time:0.45, power:35.1},
+"شوالیه": {w:64, wood:98, stone:103, iron:159, time:0.53, power:42.1},
+"جنونگر": {w:102, wood:119, stone:131, iron:154, time:0.42, power:47.35},
+"مدافع": {w:111, wood:140, stone:151, iron:199, time:0.39, power:52.95},
+"جاویدان": {w:398, wood:392, stone:304, iron:500, time:1.40, power:95.3},
+"گلادیاتور": {w:235, wood:322, stone:337, iron:349, time:1.42, power:94.35},
+"زنجیرشکن": {w:321, wood:391, stone:500, iron:149, time:1.45, power:92.85},
+"نخبه": {w:255, wood:460, stone:249, iron:325, time:1.30, power:91.95},
+"خرس": {w:468, wood:439, stone:321, iron:368, time:1.19, power:95.65}
+};
+
+const select = document.getElementById("unit");
+
+for(let u in units){
+    let opt = document.createElement("option");
+    opt.value = u;
+    opt.innerText = u;
+    select.appendChild(opt);
+}
+
+function formatTime(min){
+    let h = Math.floor(min/60);
+    let m = Math.round(min%60);
+    return h ? `${h}h ${m}m` : `${m}m`;
+}
+
+function calc(){
+    let u = units[select.value];
+    let n = document.getElementById("count").value;
+
+    document.getElementById("power").innerText = (u.power*n).toFixed(2);
+    document.getElementById("wheat").innerText = u.w*n;
+    document.getElementById("wood").innerText = u.wood*n;
+    document.getElementById("stone").innerText = u.stone*n;
+    document.getElementById("iron").innerText = u.iron*n;
+    document.getElementById("time").innerText = formatTime(u.time*n);
+}
+</script>
+
+</body>
+</html>

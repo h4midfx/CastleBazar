@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ محاسبه‌گر ارتش</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background: radial-gradient(circle at top,#1e293b,#0f172a);
+    color:white;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    padding:25px;
+    font-size:22px;
+    font-weight:bold;
+    color:#fbbf24;
+    letter-spacing:1px;
+}
+
+/* MAIN CARD */
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:10px;
+}
+
+.card{
+    background:rgba(17,24,39,0.9);
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+}
+
+/* INPUTS */
+label{
+    display:block;
+    margin-top:12px;
+    color:#cbd5e1;
+    font-size:14px;
+}
+
+select, input{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border-radius:10px;
+    border:none;
+    background:#1f2937;
+    color:white;
+    outline:none;
+}
+
+button{
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:linear-gradient(90deg,#fbbf24,#f59e0b);
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+/* RESULT GRID */
+.result{
+    margin-top:20px;
+    display:grid;
+    gap:10px;
+}
+
+.box{
+    background:#111827;
+    padding:12px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    border:1px solid rgba(255,255,255,0.05);
+    transition:0.2s;
+}
+
+.box:hover{
+    background:#1f2937;
+}
+
+/* COLORS */
+.title{
+    text-align:center;
+    margin-top:10px;
+    color:#fbbf24;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">⚔️ محاسبه‌گر حرفه‌ای ارتش ⚔️</div>
+
+<div class="container">
+
+<div class="card">
+
+<label>انتخاب نیرو</label>
+<select id="unit"></select>
+
+<label>تعداد</label>
+<input type="number" id="count" value="1" min="1">
+
+<button onclick="calculate()">محاسبه ⚡</button>
+
+</div>
+
+<div class="card">
+
+<div class="title">نتیجه</div>
+
+<div class="result">
+
+<div class="box"><span>⚔️ قدرت</span><span id="power">0</span></div>
+<div class="box"><span>🌾 گندم</span><span id="wheat">0</span></div>
+<div class="box"><span>🪵 چوب</span><span id="wood">0</span></div>
+<div class="box"><span>🪨 سنگ</span><span id="stone">0</span></div>
+<div class="box"><span>⛏️ آهن</span><span id="iron">0</span></div>
+<div class="box"><span>⏱️ زمان</span><span id="time">0</span></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+const units = {
+"شمشیرزن": {w:61, wood:85, stone:77, iron:117, time:0.45, power:35.1},
+"شوالیه": {w:64, wood:98, stone:103, iron:159, time:0.53, power:42.1},
+"جنونگر": {w:102, wood:119, stone:131, iron:154, time:0.42, power:47.35},
+"مدافع": {w:111, wood:140, stone:151, iron:199, time:0.39, power:52.95},
+"دوشمشیره": {w:149, wood:148, stone:206, iron:244, time:0.58, power:52.95},
+"نگهبان": {w:221, wood:210, stone:290, iron:403, time:0.50, power:77.5},
+"شمشیرشکن": {w:203, wood:357, stone:384, iron:258, time:0.50, power:83.85},
+"گارد": {w:240, wood:244, stone:288, iron:439, time:1.15, power:84.2},
+"گلادیاتور": {w:235, wood:322, stone:337, iron:349, time:1.42, power:94.35},
+"جاویدان": {w:398, wood:392, stone:304, iron:500, time:1.40, power:95.3},
+"هوپلیت": {w:209, wood:301, stone:234, iron:367, time:1.13, power:84.2},
+"تبرزیندار": {w:174, wood:228, stone:257, iron:283, time:1.05, power:75.65},
+"زنجیرشکن": {w:321, wood:391, stone:500, iron:149, time:1.45, power:92.85},
+"جالوت": {w:539, wood:291, stone:148, iron:57, time:1.15, power:73.75},
+"دست‌دراز": {w:199, wood:91, stone:128, iron:349, time:1.38, power:68.45},
+"شکارچی": {w:171, wood:229, stone:204, iron:151, time:0.52, power:60.85},
+"تیرآتشین": {w:216, wood:321, stone:265, iron:239, time:0.59, power:76.5},
+"عقاب": {w:253, wood:377, stone:307, iron:257, time:1.13, power:81.65},
+"یخزاد": {w:187, wood:307, stone:459, iron:333, time:1.23, power:88.2},
+"نخبه": {w:255, wood:460, stone:249, iron:325, time:1.30, power:91.95},
+"بارکش": {w:290, wood:328, stone:189, iron:148, time:1.13, power:29.6},
+"سوارنیزه": {w:169, wood:83, stone:106, iron:89, time:0.58, power:39.7},
+"سوارکار": {w:199, wood:131, stone:123, iron:107, time:0.53, power:10.5},
+"گاری": {w:589, wood:633, stone:257, iron:212, time:0.57, power:53.65},
+"ارابه": {w:120, wood:100, stone:150, iron:80, time:0.25, power:55.1},
+"سایه سوار": {w:582, wood:347, stone:221, iron:361, time:1.21, power:88.4},
+"خرس": {w:468, wood:439, stone:321, iron:368, time:1.19, power:95.65}
+};
+
+const select = document.getElementById("unit");
+
+for(let u in units){
+    let opt = document.createElement("option");
+    opt.value = u;
+    opt.innerText = u;
+    select.appendChild(opt);
+}
+
+function formatTime(min){
+    let h = Math.floor(min/60);
+    let m = Math.round(min%60);
+    return h>0 ? `${h} ساعت ${m} دقیقه` : `${m} دقیقه`;
+}
+
+function calculate(){
+    let u = units[select.value];
+    let n = +document.getElementById("count").value;
+
+    document.getElementById("power").innerText = Math.floor(u.power*n);
+    document.getElementById("wheat").innerText = u.w*n;
+    document.getElementById("wood").innerText = u.wood*n;
+    document.getElementById("stone").innerText = u.stone*n;
+    document.getElementById("iron").innerText = u.iron*n;
+    document.getElementById("time").innerText = formatTime(u.time*n);
+}
+</script>
+
+</body>
+</html>
